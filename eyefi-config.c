@@ -77,8 +77,8 @@ int __dumpbuf(const char *buffer, int bytesToWrite, int per_line)
 	char *tmpbuf = &linebuf[0];
 	    unsigned long sum = 0;
 	    int j;
-#define lprintf(args, ...)        do {            \
-	    tmpbuf += sprintf(tmpbuf, ## args, __VA_ARGS__);\
+#define lprintf(...)        do {            \
+	    tmpbuf += sprintf(tmpbuf, __VA_ARGS__);\
 } while (0)
 
 	    lprintf("[%03d]: ", i);

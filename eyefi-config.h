@@ -61,7 +61,7 @@ int getpagesize(void);
 #define MAP_SHARED 0
 inline DWORD HIDWORD(size_t x) { return (DWORD)((__int64)x >> 32); }
 inline DWORD LODWORD(size_t x) { return (DWORD)x; }
-#define open(fn, md) _winOpen(fn, md)
+#define open(fn, md, ...) _winOpen(fn, md)
 #define read(fd, buf, size) _winRead(fd, buf, size)
 #define write(fd, buf, size) _winWrite(fd, buf, size)
 #define close(fd) _winClose(fd)
@@ -76,9 +76,9 @@ inline DWORD LODWORD(size_t x) { return (DWORD)x; }
 
 #define output_flush()	fflush(NULL)
 
-#define debug_printf(level, args, ...) do {      \
+#define debug_printf(level, ...) do {      \
 	if ((level) <= eyefi_debug_level)      \
-		fprintf(stderr, args, __VA_ARGS__);      \
+		fprintf(stderr, __VA_ARGS__);      \
 	} while(0)
 
 #endif
