@@ -363,6 +363,7 @@ void usage(void)
 	printf("  -l		dump card log\n");
 	printf("  -m	 	print card mac\n");
 	printf("  -u	 	print card upload key\n");
+	printf("  -i	 	print all card information\n");
 	printf("  --transfer-mode[=mode]  print or change card transfer mode\n");
 	printf("                          or =help to list modes\n");
 	printf("  --wifi-radio  fetch wifi radio state\n");
@@ -468,7 +469,7 @@ int main(int argc, char *argv[])
 	if (argc == 1)
 		usage();
 
-	char optarg_shorts[] = "a:bcd:kflmp:r:st:uz";
+	char optarg_shorts[] = "a:bcd:ikflmp:r:st:uz";
 	while ((cint = getopt_long_only(argc, argv, optarg_shorts,
 		&long_options[0], &option_index)) != -1) {
 		c = cint;
@@ -537,6 +538,14 @@ int main(int argc, char *argv[])
 			break;
 		case 'f':
 			print_card_firmware_info();
+			break;
+		case 'i':
+			print_card_firmware_info();
+			print_upload_key();
+			print_card_key();
+			print_card_mac();
+			print_direct_mode_info();
+			print_configured_nets();
 			break;
 		case 'k':
 			print_card_key();
