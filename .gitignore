@@ -1,3 +1,9 @@
 /*.o
 /eyefi-config
 +*~
+/Debug/eyefi-config.tlog
+/.vs/eyefi-config/v14
+/Debug
+/eyefi-config.VC.VC.opendb
+/eyefi-config.VC.db
+*.user

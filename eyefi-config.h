@@ -37,8 +37,35 @@ extern int eyefi_debug_level;
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
 #include <getopt.h>
+#else
+#pragma warning(disable:4996)
+#include <windows.h>
+#include <io.h>
+#define __attribute__(a)
+#define __attribute(a)
+#define sleep(s) Sleep((s) * 1000)
+#define usleep(s) Sleep(s / 1000)
+void *mmap(void *addr, size_t len, int prot, int flags,	int fildes, off_t off);
+int munmap(void *addr, size_t len);
+int _winOpen(const char *fileName, DWORD fileMode);
+int _winRead(int fd, void *buffer, DWORD size);
+int _winWrite(int fd, void *buffer, DWORD size);
+void _winClose(int fd);
+
+int getpagesize(void);
+#define PROT_READ GENERIC_READ
+#define MAP_FILE 0
+#define MAP_SHARED 0
+inline DWORD HIDWORD(size_t x) { return (DWORD)((__int64)x >> 32); }
+inline DWORD LODWORD(size_t x) { return (DWORD)x; }
+#define open(fn, md) _winOpen(fn, md)
+#define read(fd, buf, size) _winRead(fd, buf, size)
+#define write(fd, buf, size) _winWrite(fd, buf, size)
+#define close(fd) _winClose(fd)
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -49,9 +76,9 @@ extern int eyefi_debug_level;
 
 #define output_flush()	fflush(NULL)
 
-#define debug_printf(level, args...) do {      \
+#define debug_printf(level, args, ...) do {      \
 	if ((level) <= eyefi_debug_level)      \
-		fprintf(stderr, ## args);      \
+		fprintf(stderr, args, __VA_ARGS__);      \
 	} while(0)
 
 #endif

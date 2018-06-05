@@ -9,7 +9,9 @@
  */
 
 #include "eyefi-config.h"
+#ifndef WIN32
 #include <sys/mman.h>
+#endif
 
 int eyefi_debug_level = 1;
 
@@ -75,8 +77,8 @@ int __dumpbuf(const char *buffer, int bytesToWrite, int per_line)
 	char *tmpbuf = &linebuf[0];
 	    unsigned long sum = 0;
 	    int j;
-#define lprintf(args...)        do {            \
-	    tmpbuf += sprintf(tmpbuf, ## args);\
+#define lprintf(args, ...)        do {            \
+	    tmpbuf += sprintf(tmpbuf, ## args, __VA_ARGS__);\
 } while (0)
 
 	    lprintf("[%03d]: ", i);
@@ -225,7 +227,7 @@ int nr_fresh_pages(int fd, int len)
 	int faults_before;
 	int faults_after;
 	char *addr;
-	int tmp;
+	int tmp = 0;
 	int i;
 
 	addr = mmap(NULL, len, PROT_READ, MAP_FILE|MAP_SHARED, fd, 0);
@@ -263,6 +265,7 @@ retry:
 	// This at least works around it by detecting when we
 	// did and did not actually bring in pages from the
 	// disk.
+#ifndef WIN32
 	nr_fresh = nr_fresh_pages(fd, EYEFI_BUF_SIZE);
 	if (!nr_fresh) {
 		tries++;
@@ -271,6 +274,7 @@ retry:
 		close(fd);
 		goto retry;
 	}
+#endif
 	ret = read(fd, eyefi_buf, EYEFI_BUF_SIZE);
 	if ((eyefi_debug_level >= 3) ||
 	    (eyefi_debug_level >= 2 && (__file == RSPM))) {
@@ -489,7 +493,7 @@ char *convert_ascii_to_hex(char *ascii)
 
 int hex_only(char *str)
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < strlen(str); i++) {
 		if (((str[i] >= 'a') && str[i] <= 'f') ||
@@ -578,8 +582,9 @@ int var_byte_len(struct var_byte_response *vb)
 	return sizeof(vb->len) + vb->len;
 }
 
-
+#if !defined(offsetof)
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#endif
 int card_config_set(enum card_info_subcommand cmd, struct var_byte_response *args)
 {
 	int len;

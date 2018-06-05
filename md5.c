@@ -15,7 +15,9 @@
 #include "eyefi-config.h"
 
 #include <string.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 /**
  * hmac_md5_vector - HMAC-MD5 over data vector (RFC 2104)

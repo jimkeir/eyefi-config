@@ -9,6 +9,9 @@
  */
 
 #include "eyefi-config.h"
+#ifdef WIN32
+#include "win32-getopt.h"
+#endif
 
 void print_pascal_string(struct pascal_string *str)
 {
@@ -383,8 +386,8 @@ int is_long_opt(int cint, struct option *long_options)
 	return 0;
 }
 
-#define __stringify_1(x...)     #x
-#define __stringify(x...)       __stringify_1(x)
+#define __stringify_1(x, ...)     #x, __VA_ARGS__
+#define __stringify(x, ...)       __stringify_1(x, __VA_ARGS__)
 
 #define EYEFI_ARG(arg) {		\
 	.long_opt = __stringify(arg),	\

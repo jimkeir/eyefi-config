@@ -15,7 +15,9 @@
 #include "eyefi-config.h"
 
 #include <string.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #define SHA1_MAC_LEN 20
 void sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac);
